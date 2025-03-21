@@ -1,0 +1,10 @@
+-- 3 : USERNAME_TO_LOWER --
+CREATE OR ALTER PROCEDURE USERNAME_TO_LOWER
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    UPDATE players
+    SET pseudo = LOWER(pseudo);
+
+END;
