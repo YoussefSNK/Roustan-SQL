@@ -38,3 +38,17 @@ ADD CONSTRAINT FK_players_play_players FOREIGN KEY (id_player) REFERENCES player
 
 ALTER TABLE players_play
 ADD CONSTRAINT FK_players_play_turns FOREIGN KEY (id_turn) REFERENCES turns(id_turn);
+
+-- modification players --
+
+ALTER TABLE players
+ALTER COLUMN pseudo VARCHAR(255);
+
+-- index
+
+CREATE INDEX idx_players_pseudo ON players(pseudo);
+CREATE INDEX idx_players_in_parties_id_party ON players_in_parties(id_party);
+CREATE INDEX idx_players_in_parties_id_player ON players_in_parties(id_player);
+CREATE INDEX idx_turns_id_party ON turns(id_party);
+CREATE INDEX idx_players_play_id_player ON players_play(id_player);
+CREATE INDEX idx_players_play_id_turn ON players_play(id_turn);
