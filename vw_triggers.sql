@@ -15,3 +15,11 @@ BEGIN
     EXEC COMPLETE_TOUR @turn_id, @party_id;
 END;
 
+-- trigger 2
+CREATE TRIGGER trg_username_to_lower
+ON players
+AFTER INSERT
+AS
+BEGIN
+    EXEC USERNAME_TO_LOWER;
+END;
