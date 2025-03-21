@@ -84,3 +84,41 @@ BEGIN
     
     RETURN @next_role_id;
 END;
+
+-- 3 : get_the_winner() --
+CREATE OR ALTER FUNCTION get_the_winner(@partyid INT)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT TOP 1
+        p.pseudo AS nom_du_joueur,
+        CASE
+            WHEN r.description_role = 'Loup-Garou' THEN 'Loup'
+            ELSE 'Villageois'
+        END AS role,
+        pt.title_party AS nom_de_la_partie,
+        COUNT(DISTINCT pp.id_turn) AS nb_tours_joues_par_joueur,
+        (SELECT COUNT(*) FROM turns WHERE id_party = @partyid) AS nb_total_tours_partie,
+        AVG(DATEDIFF(SECOND, pp.start_time, pp.end_time)) AS temps_moyen_decision
+    FROM
+        players p
+    JOIN
+        players_in_parties pip ON p.id_player = pip.id_player
+    JOIN
+        roles r ON pip.id_role = r.id_role
+    JOIN
+        parties pt ON pip.id_party = pt.id_party
+    JOIN
+        turns t ON pt.id_party = t.id_party
+    JOIN
+        players_play pp ON p.id_player = pp.id_player AND t.id_turn = pp.id_turn
+    WHERE
+        pt.id_party = @partyid
+        AND pip.is_alive = 'true'
+    GROUP BY
+        p.pseudo, r.description_role, pt.title_party
+    ORDER BY
+        COUNT(DISTINCT pp.id_turn) DESC,
+        AVG(DATEDIFF(SECOND, pp.start_time, pp.end_time)) ASC
+);
