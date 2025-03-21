@@ -36,3 +36,51 @@ RETURN
     ORDER BY NEWID()
 );
 
+-- 2 : random_role() --
+
+CREATE OR ALTER FUNCTION random_role(@id_party INT)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @total_players INT;
+    DECLARE @wolf_count INT;
+    DECLARE @wolf_quota FLOAT;
+    DECLARE @next_role_id INT;
+    
+    SELECT @total_players = COUNT(*) 
+    FROM players_in_parties
+    WHERE id_party = @id_party;
+    
+    SELECT @wolf_count = COUNT(*) 
+    FROM players_in_parties pip
+    JOIN roles r ON pip.id_role = r.id_role
+    WHERE pip.id_party = @id_party AND r.description_role = 'Loup-Garou';
+    
+    SET @wolf_quota = (@total_players + 1) * 0.33;
+    
+    -- Quota pour pouvoir être loup si ya pas trop de loups
+    IF @wolf_count < @wolf_quota
+    BEGIN
+        -- 33% chance
+        IF RAND() < 0.33
+        BEGIN
+            SELECT @next_role_id = id_role FROM roles WHERE description_role = 'Loup-Garou';
+        END
+        ELSE
+        BEGIN
+            SELECT TOP 1 @next_role_id = id_role 
+            FROM roles 
+            WHERE description_role <> 'Loup-Garou'
+            ORDER BY NEWID();
+        END
+    END
+    ELSE
+    BEGIN
+        SELECT TOP 1 @next_role_id = id_role 
+        FROM roles 
+        WHERE description_role <> 'Loup-Garou'
+        ORDER BY NEWID();
+    END
+    
+    RETURN @next_role_id;
+END;
