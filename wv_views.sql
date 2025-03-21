@@ -37,3 +37,24 @@ JOIN
     players_play pp ON p.id_player = pp.id_player
 GROUP BY
     p.pseudo, pr.title_party;
+
+-- VIEW: ALL_PLAYERS_ELAPSED_TOUR --
+
+CREATE VIEW ALL_PLAYERS_ELAPSED_TOUR AS
+SELECT
+    p.pseudo AS nom_du_joueur,
+    pr.title_party AS nom_de_la_partie,
+    pp.id_turn AS numero_du_tour,
+    t.start_time AS date_debut_du_tour,
+    pp.end_time AS date_prise_decision,
+    DATEDIFF(SECOND, t.start_time, pp.end_time) AS nb_secondes_passees
+FROM
+    players p
+JOIN
+    players_in_parties pip ON p.id_player = pip.id_player
+JOIN
+    parties pr ON pip.id_party = pr.id_party
+JOIN
+    players_play pp ON p.id_player = pp.id_player
+JOIN
+    turns t ON pp.id_turn = t.id_turn;
