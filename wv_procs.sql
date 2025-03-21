@@ -1,3 +1,5 @@
+-- 1 : SEED_DATA --
+
 CREATE PROCEDURE SEED_DATA
     @NB_PLAYERS INT,
     @PARTY_ID INT
@@ -5,10 +7,8 @@ AS
 BEGIN
     DECLARE @max_turns INT;
 
-    -- Logique pour déterminer le nombre maximum de tours
     SET @max_turns = (SELECT COUNT(*) FROM turns WHERE id_party = @PARTY_ID);
 
-    -- Insérer des tours de jeu
     WHILE @max_turns > 0
     BEGIN
         INSERT INTO turns (id_party, start_time, end_time)
@@ -25,8 +25,6 @@ CREATE PROCEDURE COMPLETE_TOUR
     @PARTY_ID INT
 AS
 BEGIN
-    -- Logique pour appliquer les déplacements et résoudre les conflits
-    -- Ici, on suppose que les déplacements sont validés sans conflit
     UPDATE players_play
     SET action = 'completed'
     WHERE id_turn = @TOUR_ID AND id_party = @PARTY_ID;

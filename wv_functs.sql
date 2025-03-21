@@ -19,8 +19,6 @@ AS
 BEGIN
     DECLARE @role INT;
 
-    -- Logique pour déterminer le rôle en fonction des quotas
-    -- Ici, on suppose que le rôle est déterminé aléatoirement entre 1 (loup) et 2 (villageois)
     SET @role = CASE
                     WHEN RAND() < 0.5 THEN 1
                     ELSE 2
