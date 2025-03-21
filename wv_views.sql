@@ -58,3 +58,33 @@ JOIN
     players_play pp ON p.id_player = pp.id_player
 JOIN
     turns t ON pp.id_turn = t.id_turn;
+
+
+-- VIEW: ALL_PLAYERS_STATS --
+
+CREATE VIEW ALL_PLAYERS_STATS AS
+SELECT
+    p.pseudo AS nom_du_joueur,
+    r.description_role AS role,
+    pr.title_party AS nom_de_la_partie,
+    COUNT(pp.id_turn) AS nb_tours_joues,
+    (SELECT COUNT(t2.id_turn) FROM turns t2 WHERE t2.id_party = pip.id_party) AS nb_total_tours,
+    CASE
+        WHEN r.description_role = 'loup' THEN 'Villageois éliminés'
+        ELSE 'Survivant'
+    END AS vainqueur,
+    AVG(DATEDIFF(SECOND, t.start_time, pp.end_time)) AS temps_moyen_prise_decision
+FROM
+    players p
+JOIN
+    players_in_parties pip ON p.id_player = pip.id_player
+JOIN
+    roles r ON pip.id_role = r.id_role
+JOIN
+    parties pr ON pip.id_party = pr.id_party
+JOIN
+    players_play pp ON p.id_player = pp.id_player
+JOIN
+    turns t ON pp.id_turn = t.id_turn
+GROUP BY
+    p.pseudo, r.description_role, pr.title_party, pip.id_party;

@@ -60,3 +60,7 @@ CREATE INDEX idx_players_play_id_turn ON players_play(id_turn);
 
 ALTER TABLE players_in_parties
 ADD CONSTRAINT CHK_is_alive CHECK (is_alive IN ('true', 'false'));
+
+
+ALTER TABLE players ALTER COLUMN pseudo VARCHAR(255);
+ALTER TABLE roles ALTER COLUMN description_role VARCHAR(255);
