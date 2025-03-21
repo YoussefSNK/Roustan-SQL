@@ -47,7 +47,7 @@ ALTER COLUMN pseudo VARCHAR(255);
 ALTER TABLE players_in_parties
 ALTER COLUMN is_alive VARCHAR(255);
 
--- index
+-- index --
 
 CREATE INDEX idx_players_pseudo ON players(pseudo);
 CREATE INDEX idx_players_in_parties_id_party ON players_in_parties(id_party);
@@ -55,3 +55,8 @@ CREATE INDEX idx_players_in_parties_id_player ON players_in_parties(id_player);
 CREATE INDEX idx_turns_id_party ON turns(id_party);
 CREATE INDEX idx_players_play_id_player ON players_play(id_player);
 CREATE INDEX idx_players_play_id_turn ON players_play(id_turn);
+
+-- contrainte vérification -- 
+
+ALTER TABLE players_in_parties
+ADD CONSTRAINT CHK_is_alive CHECK (is_alive IN ('true', 'false'));
