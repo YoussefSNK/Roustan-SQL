@@ -39,10 +39,13 @@ ADD CONSTRAINT FK_players_play_players FOREIGN KEY (id_player) REFERENCES player
 ALTER TABLE players_play
 ADD CONSTRAINT FK_players_play_turns FOREIGN KEY (id_turn) REFERENCES turns(id_turn);
 
--- modification players --
+-- modification de text en varchar --
 
 ALTER TABLE players
 ALTER COLUMN pseudo VARCHAR(255);
+
+ALTER TABLE players_in_parties
+ALTER COLUMN is_alive VARCHAR(255);
 
 -- index
 
